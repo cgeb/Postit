@@ -1,8 +1,10 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :edit, :update] 
+  before_action :set_post, only: [:show, :edit, :update, :vote]
+  before_action :require_user, except: [:index, :show, :vote]
+  before_action :correct_user, only: [:edit, :update]
 
   def index
-    @posts = Post.all
+    @posts = Post.all.sort_by {|post| post.total_votes}.reverse
   end
 
   def show
@@ -15,7 +17,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
-    @post.creator = User.first
+    @post.creator = current_user
 
     if @post.save
       flash[:notice] = "Your post has been created."
@@ -28,12 +30,23 @@ class PostsController < ApplicationController
   def edit; end
 
   def update
-
     if @post.update(post_params)
       flash[:notice] = "This post has been updated."
       redirect_to post_path(@post)
     else
       render 'edit'
+    end
+  end
+
+  def vote
+    @vote = Vote.create(creator: current_user, vote: params[:vote], voteable: @post)
+
+    if !@vote.errors.any?
+      flash[:notice] = "Your vote has been accepted."
+      redirect_to :back
+    else
+      flash[:error] = "You have already voted on this post."
+      redirect_to :back
     end
   end
 
@@ -45,5 +58,12 @@ class PostsController < ApplicationController
 
   def set_post
     @post = Post.find(params[:id])
+  end
+
+  def correct_user
+    if current_user != @post.creator
+      flash[:error] = "You're not allowed to do that."
+      redirect_to root_path
+    end
   end
 end

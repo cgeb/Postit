@@ -2,9 +2,47 @@
   <li>
     <%= link_to "Postit!", root_path, :class => 'brand' %>
   </li>
-  <li>
-    <div class="nav_item"><%= link_to 'New post', new_post_path, class: "btn btn-success btn-small" %></div>
-  </li>
+  <% if logged_in? %>
+    <li>
+      <div class="nav_item"><%= link_to 'New post', new_post_path, class: "btn btn-success btn-small" %></div>
+    </li>
+  <% else %>
+    <li>
+      <div class="nav_item"><%= link_to 'Register', register_path, class: "btn btn-success btn-small" %></div>
+    </li>
+  <% end %>
+  <% if logged_in? %>
+    <div class="btn-group nav_item open">
+      <%= link_to '#', class: "btn btn-small dropdown-toggle", "data-toggle" => "dropdown" do %>
+        <%= current_user.user_name %> 
+        <span class="caret"></span>
+      <% end %>
+      <ul class="dropdown-menu">
+        <li>
+          <%= link_to edit_user_path(current_user) do %>
+            <i class="icon-pencil"></i>
+            Edit profile
+          <% end %>
+        </li>
+        <li>
+          <%= link_to user_path(current_user) do %>
+            <i class="icon-user"></i>
+            View profile
+          <% end %>
+        </li>
+        <li>
+          <%= link_to logout_path do %>
+            <i class="icon-circle-arrow-left"></i>
+            Logout
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  <% else %>
+    <li>
+      <div class="nav_item"><%= link_to 'Login', login_path, class: "btn btn-success btn-small" %></div>
+    </li>
+  <% end %>
   <li>
     <div class="btn-group nav_item">
       <%= link_to "#", class: "btn btn-small dropdown-toggle", "data-toggle" => "dropdown" do %>
@@ -17,13 +55,15 @@
             <%= link_to category.name, category_path(category) %>
           </li>
         <% end %>
-        <li class="divider"></li>
-        <li>
-          <%= link_to(new_category_path) do %>
-            <i class="icon-plus"></i>
-            New Category
-          <% end %>
-        </li>
+        <% if logged_in? %>
+          <li class="divider"></li>
+          <li>
+            <%= link_to(new_category_path) do %>
+              <i class="icon-plus"></i>
+              New Category
+            <% end %>
+          </li>
+        <% end %>
       </ul>
     </div>
   </li>
