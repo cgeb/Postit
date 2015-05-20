@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  include Sluggable
+  include SluggableCgeb
   
   has_many :posts
   has_many :comments
@@ -10,4 +10,8 @@ class User < ActiveRecord::Base
   validates :password, presence: true, length: {minimum: 5}, on: :create
 
   sluggable_column :user_name
+
+  def admin?
+    self.role == 'admin'
+  end
 end

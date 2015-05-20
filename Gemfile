@@ -13,7 +13,8 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 1.2'
 gem 'bcrypt-ruby', '3.0.0'
-gem 'voteable_cgeb'
+gem 'voteable_cgeb', '=0.0.1'
+gem 'sluggable_cgeb', '=0.0.2'
 
 group :doc do
   gem 'sdoc', require: false

@@ -65,7 +65,7 @@ class PostsController < ApplicationController
   end
 
   def correct_user
-    if current_user != @post.creator
+    if !logged_in? || (current_user != @post.creator && !current_user.admin?)
       flash[:error] = "You're not allowed to do that."
       redirect_to root_path
     end
